@@ -1,0 +1,21 @@
+Member:
+   spam1:
+      Email: spam1@test.com
+      IP: 1.1.1.1
+      Nickname: spam1
+   spam2:
+      Email: spam2@test.com
+      IP: 1.1.1.2
+      Nickname: spam2
+   spam3:
+      Email: spam3@test.com
+      IP: 1.1.1.3
+      Nickname: spam3
+   ham1:
+      Email: ham1@test.com
+      IP: 2.1.1.1
+      Nickname: ham1
+   ham2:
+      Email: ham2@test.com
+      IP: 2.1.1.2
+      Nickname: ham2
