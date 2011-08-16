@@ -59,6 +59,10 @@ class MemberSpamCheckService_StopForumSpamOrg extends MemberSpamCheckService {
 		$emails = (@$map['Email']) ? array_filter($members->column($map['Email']), $isEmptyFn) : array();
 		$nicknames = (@$map['Nickname']) ? array_filter($members->column($map['Nickname']), $isEmptyFn) : array();
 		
+		$ips = array_map('urlencode', $ips);
+		$nicknames = array_map('urlencode', $nicknames);
+		$emails = array_map('urlencode', $emails);
+		
 		$url = self::$service_url;
 		if($ips) $url .= '&ip[]=' . implode('&ip[]=', $ips);
 		if($nicknames) $url .= '&username[]=' . implode('&username[]=', $nicknames);
@@ -130,7 +134,7 @@ class MemberSpamCheckService_StopForumSpamOrg extends MemberSpamCheckService {
 		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		if((int)$statusCode > 399) {
 			// SS_Log::log('Request error: ' . $statusCode, SS_Log::NOTICE);
-			$this->output('Request error: ' . $statusCode);
+			$this->output('Request error: ' . $statusCode . ' (Body: ' . $response . ')');
 			return false;
 		}
 		
