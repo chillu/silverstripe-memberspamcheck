@@ -18,6 +18,7 @@ class MemberSpamCheckTask extends CliController {
 	 * @return DataObjectSet All members detected as spam ()
 	 */
 	function process() {
+		// TODO Get stdout logger working... @#@$^$#^#^@#
 		// require_once(BASE_PATH . '/sapphire/thirdparty/Zend/Log/Writer/Stream.php');		
 		// SS_Log::add_writer(new Zend_Log_Writer_Stream('php://stdout'), SS_Log::NOTICE, '<=');
 		// SS_Log::log(new Exception('bla'));

@@ -63,9 +63,12 @@ class MemberSpamCheckService_StopForumSpamOrg extends MemberSpamCheckService {
 		if($ips) $url .= '&ip[]=' . implode('&ip[]=', $ips);
 		if($nicknames) $url .= '&username[]=' . implode('&username[]=', $nicknames);
 		if($emails) $url .= '&email[]=' . implode('&email[]=', $emails);
+		
+		$this->output("stopforumspam.org: Requesting " . $url);
 
 		$response = $this->request($url);
 		if(!$response) return false;
+		
 		
 		$resultObj = json_decode($response);
 		foreach(array('Nickname' => 'username', 'IP' => 'ip', 'Email' => 'email') as $objectField => $serviceField) {
@@ -119,16 +122,25 @@ class MemberSpamCheckService_StopForumSpamOrg extends MemberSpamCheckService {
 		
 		$curlError = curl_error($ch);
 		if($curlError) {
-			SS_Log::log($curlError, SS_Log::NOTICE);
+			// SS_Log::log($curlError, SS_Log::NOTICE);
+			$this->output($curlError);
 			return false;
 		}
 		
 		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		if((int)$statusCode > 399) {
-			SS_Log::log('Request error: ' . $statusCode, SS_Log::NOTICE);
+			// SS_Log::log('Request error: ' . $statusCode, SS_Log::NOTICE);
+			$this->output('Request error: ' . $statusCode);
 			return false;
 		}
 		
 		return $response;
+	}
+	
+	/**
+	 * @todo Should use SS_Log::log(), but that class is seriously messed up...
+	 */
+	protected function output($msg) {
+		if(!SapphireTest::is_running_test()) echo $msg . "\n";
 	}
 }
