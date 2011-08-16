@@ -11,8 +11,9 @@ class MemberSpamCheckTask extends CliController {
 	
 	/**
 	 * @var int How many members to query at a time.
+	 * We're passing them around as DataObjects, so don't set it too high.
 	 */
-	static $limit = 2;
+	static $limit = 50;
 	
 	/**
 	 * @return DataObjectSet All members detected as spam ()
