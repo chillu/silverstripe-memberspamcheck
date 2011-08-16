@@ -47,6 +47,9 @@ class MemberSpamCheckTask extends CliController {
 		
 		$spamMembers = new DataObjectSet();
 		if($checks) foreach($checks as $id => $check) {
+			// TODO More expressive error reporting - easy for the task to "get stuck" on one member
+			if(!$id) continue;
+			
 			$member = $members->find('ID', $id);
 
 			// Its important to fall back to a rating of 0, to avoid querying the same members successively
