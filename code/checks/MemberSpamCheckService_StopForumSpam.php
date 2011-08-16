@@ -10,7 +10,21 @@ class MemberSpamCheckService_StopForumSpamOrg extends MemberSpamCheckService {
 	
 	static $service_url = "http://www.stopforumspam.com/api?f=json";
 	
-	static $service_limit = 2;
+	/**
+	 * @var int See http://stopforumspam.com/usage:
+	 * "API queries against my server are currently limited to 20,000 per day."
+	 * "Each bulk query of 5 field tests consumes one query and 0.2 for each field over 5".
+	 * 
+	 * With the three fields we're checking, this roughly works out as 5 member records.
+	 */
+	static $service_limit = 5;
+	
+	/**
+	 * @var Int Convert a infinite frequency count into a
+	 * finit spam score from 0 to 100. The score is calculated
+	 * as a percentage of this limit.
+	 */
+	public $spamscoreFrequencyLimit = 10;
 	
 	protected $requiredExtensions = array('Member' => array('MemberSpamCheckExtension'));
 	
@@ -65,14 +79,28 @@ class MemberSpamCheckService_StopForumSpamOrg extends MemberSpamCheckService {
 					// Aggregates the results of different checks
 					if(!isset($return[$member->ID])) $return[$member->ID] = array('score' => 0, 'data' => array());
 					
+					// Calculate score (see $spamscore_frequency_limit)
+					$newScore = $this->getScoreFromFrequency($check->frequency);
+					$existingScore = $return[$member->ID]['score'];
 					// Takes the biggest score of the available ones
-					if($check->frequency > $return[$member->ID]['score']) $return[$member->ID]['score'] = $check->frequency;
+					if($newScore > $existingScore) $return[$member->ID]['score'] = $newScore;
+					
 					$return[$member->ID]['data'][$serviceField] = (array)$check;
 				}
 			}
 		}
 
 		return $return;
+	}
+	
+	/**
+	 * @param Int Absolute, positive value
+	 * @return Int Value between -1 and 100
+	 */
+	protected function getScoreFromFrequency($frequency) {
+		$max = 100;
+		if($frequency == 0) return -1;
+		else return min(round(($frequency / $this->spamscoreFrequencyLimit) * $max), $max);
 	}
 	
 	/**

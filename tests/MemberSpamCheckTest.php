@@ -59,6 +59,17 @@ class MemberSpamCheckTest extends SapphireTest {
 		// $spam1ServiceData = $spam1Data->MemberSpamCheckService_StopForumSpamOrgMock;
 		$this->assertEquals('2011-07-13 05:09:08', $spam1Data['username']['lastseen']);
 	}
+	
+	function testGetScoreFromFrequency() {
+		$service = new MemberSpamCheckService_StopForumSpamOrgMock();
+		$method = new ReflectionMethod($service, 'getScoreFromFrequency');
+		$method->setAccessible(true);
+		$this->assertEquals(-1, $method->invoke($service, 0));
+		$this->assertEquals(10, $method->invoke($service, 1));
+		$this->assertEquals(20, $method->invoke($service, 2));
+		$this->assertEquals(100, $method->invoke($service, 10));
+		$this->assertEquals(100, $method->invoke($service, 20));
+	}
 }
 
 class MemberSpamCheckService_StopForumSpamOrgMock extends MemberSpamCheckService_StopForumSpamOrg implements TestOnly {
