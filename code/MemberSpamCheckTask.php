@@ -12,11 +12,13 @@ class MemberSpamCheckTask extends CliController {
 	/**
 	 * @var int How many members to query at a time.
 	 */
-	static $limit = 5;
+	static $limit = 2;
 	
+	/**
+	 * @return DataObjectSet All members detected as spam ()
+	 */
 	function process() {
-		require_once(BASE_PATH . '/sapphire/thirdparty/Zend/Log/Writer/Stream.php');
-		
+		// require_once(BASE_PATH . '/sapphire/thirdparty/Zend/Log/Writer/Stream.php');		
 		// SS_Log::add_writer(new Zend_Log_Writer_Stream('php://stdout'), SS_Log::NOTICE, '<=');
 		// SS_Log::log(new Exception('bla'));
 
@@ -28,9 +30,21 @@ class MemberSpamCheckTask extends CliController {
 
 		$this->output(sprintf('Checking %d members (limit: %d)', $members->Count(), self::$limit));
 		
-		$checker = new MemberSpamCheck();
+		$spamMembers = $this->updateMembers($members);
+		
+		$this->output(sprintf('Marked %d/%d members as spam', $spamMembers->Count(), $members->Count()));
+	}
+	
+	/**
+	 * @param DataObjectSet All members to check
+	 * @param Int
+	 * @return DataObjectSet
+	 */
+	protected function updateMembers($members, $minSpamScore = 0) {
+		$checker = $this->getChecker();
 		$checks = $checker->update($members);
-		$markedAsSpam = array();
+		
+		$spamMembers = new DataObjectSet();
 		if($checks) foreach($checks as $id => $check) {
 			$member = $members->find('ID', $id);
 
@@ -43,10 +57,10 @@ class MemberSpamCheckTask extends CliController {
 			$member->SpamCheckData = json_encode($memberData);
 			$member->write();
 			
-			if($member->SpamCheckScore > 0) $markedAsSpam[] = $id;
+			if($member->SpamCheckScore > $minSpamScore) $spamMembers->push($member);
 		}
 		
-		$this->output(sprintf('Marked %d/%d members as spam', count($markedAsSpam), $members->Count()));
+		return $spamMembers;
 	}
 	
 	/**
@@ -54,6 +68,10 @@ class MemberSpamCheckTask extends CliController {
 	 */
 	protected function output($msg) {
 		if(!SapphireTest::is_running_test()) echo $msg . "\n";
+	}
+	
+	function getChecker() {
+		return new MemberSpamCheck();
 	}
 	
 	/**
