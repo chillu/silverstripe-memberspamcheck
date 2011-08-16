@@ -85,6 +85,13 @@ class MemberSpamCheckTask extends CliController {
 	 * @return DataObjectSet
 	 */
 	protected function getMembers() {
-		return DataObject::get('Member', '"SpamCheckScore" = -1', '"Created" DESC', null, self::$limit);
+		return DataObject::get('Member', '"SpamCheckScore" = -1', '"Created" DESC', null, $this->getLimit());
+	}
+	
+	/**
+	 * @return Int
+	 */
+	protected function getLimit() {
+		return isset($_REQUEST['limit']) ? (int)$_REQUEST['limit'] : self::$limit;
 	}
 }
