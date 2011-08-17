@@ -54,7 +54,7 @@ class MemberSpamCheckService_StopForumSpamOrg extends MemberSpamCheckService {
 		$return = array();
 		
 		$map = $this->getPropertyMap();
-		$isEmptyFn = function($val) {return !empty($val);};
+		$isEmptyFn = create_function('$val', 'return !empty($val);');
 		$ips = (@$map['IP']) ? array_filter($members->column($map['IP']), $isEmptyFn) : array();
 		$emails = (@$map['Email']) ? array_filter($members->column($map['Email']), $isEmptyFn) : array();
 		$nicknames = (@$map['Nickname']) ? array_filter($members->column($map['Nickname']), $isEmptyFn) : array();

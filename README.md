@@ -16,7 +16,7 @@ By default, it hooks into the free API of [stopforumspam.org](http://stopforumsp
 ## Requirements ##
 
  * SilverStripe 2.4 or newer
- * PHP 5.3 or newer (with JSON support)
+ * PHP 5.2 or newer (with JSON support)
  * PHP curl extension
 
 ## Usage ##
