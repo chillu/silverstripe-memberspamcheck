@@ -21,7 +21,27 @@ By default, it hooks into the free API of [stopforumspam.org](http://stopforumsp
 
 ## Usage ##
 
-Run `php sapphire/cli-script.php MemberSpamCheckTask` on the commandline.
+Run `php sapphire/cli-script.php MemberSpamCheckTask` on the commandline,
+which will run a check against a predefined amount of `Member` records,
+starting with the newest by creation date. It writes the `SpamCheckScore` and 
+`SpamCheckData` properties for each record, based on the implemented check classes.
+
+## Spam Score ##
+
+A score of `-1` means the record hasn't been checked, `0` means its not detected as spam,
+and `1-100` is the aggregated spam score based on various criteria in the implemented check classes.
+
+## Supported Member Properties ##
+
+By default, three properties are supported on the `Member` class: `Email`, `Nickname` and `IP`
+(see `MemberSpamCheckService::$default_property_map`). Only `Email` is activated by default.
+The other two fields depend on your usage (and extension) of the `Member` class.
+The [forum module](http://www.silverstripe.org/forum-module) adds `Nickname`.
+
+`IP` tracking has to be defined in custom code (e.g. in your signup logic).
+You can use the `SS_HTTPRequest->getIP()` method to retrieve the client IP.
+It is highly recommended to use this flag, as the originating IP is one of the
+strongest criteria to determine spam scores.
 
 ## TODO ##
 
