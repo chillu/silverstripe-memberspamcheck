@@ -64,8 +64,13 @@ MyMemberDecorator.php:
 		}
 
 		function onForumRegister($request) {
-			$this->owner->IP = $request->getIP();
-			$this->owner->write();
+			// Check for weird IP address formats like "97.72.127.18, 97.73.64.151". see http://www.regular-expressions.info/examples.html
+			$ip = $request->getIP();
+			if($ip && !preg_match('/^\b(?:\d{1,3}\.){3}\d{1,3}\b$/', $ip)) {
+				// Write first detected IP, rather than a comma-separated list
+				$this->owner->IP = trim(array_pop(preg_split('/\s*,\s*/', $ip)));
+				$this->owner->write();
+			}
 		}
 	}
 	
@@ -73,6 +78,39 @@ mysite/_config.php
 
 	DataObject::add_extension('Member', 'MyMemberDecorator');
 	
+
+### Suspend spammy members on the forum module ###
+
+By default, the detected spam score has no effect on functionality such as denying log in,
+posting comments or other user actions. In case you are using the forum module,
+it comes with a built-in `SuspendedUntil` date that we can use to lock out spammy users from posting.
+In order to write this property, we subclass `MemberSpamCheckTask` as follows:
+
+	class MyMemberSpamCheckTask extends MemberSpamCheckTask {
+
+		protected function updateMembers($members) {
+			$spamMembers = parent::updateMembers($members);
+			foreach($spamMembers as $spamMember) {
+				// We don't have a plain "suspended flag", just make it a reaaaaallly long time.
+				// On the other hand, its useful to work back to when a member was flagged.
+				$spamMember->SuspendedUntil = date('Y-m-d', strtotime('+100 years', SS_Datetime::now()->Format('U')));
+				$spamMember->write();
+			}
+
+			return $spamMembers;
+		}
+
+		/**
+		 * Limit to members which aren't already suspended.
+		 */
+		protected function getMembers() {
+			return DataObject::get('Member', '"SpamCheckScore" = -1 AND "SuspendedUntil" IS NULL', '"Created" DESC', null, $this->getLimit());
+		}
+
+	}
+	
+Run the task like before, but with the new name: `php sapphire/cli-script.php MyMemberSpamCheckTask`.
+
 
 ## TODO ##
 
