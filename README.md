@@ -41,7 +41,38 @@ The [forum module](http://www.silverstripe.org/forum-module) adds `Nickname`.
 `IP` tracking has to be defined in custom code (e.g. in your signup logic).
 You can use the `SS_HTTPRequest->getIP()` method to retrieve the client IP.
 It is highly recommended to use this flag, as the originating IP is one of the
-strongest criteria to determine spam scores.
+strongest criteria to determine spam scores. See "Howto: Track IP signups on the forum module" below.
+
+## Howto ##
+
+### Track IP signups on forum ###
+
+The [forum module](http://www.silverstripe.org/forum-module) has an `onForumRegister()`
+hook which is invoked on a new `Member` record. We can use this to track `IP` information:
+
+MyMemberDecorator.php:
+
+	<?php
+	class MyMemberDecorator extends DataObjectDecorator {
+
+		function extraStatics() {
+			return array(
+				'db' => array(
+					'IP' => 'Varchar(200)',
+				)
+			);
+		}
+
+		function onForumRegister($request) {
+			$this->owner->IP = $request->getIP();
+			$this->owner->write();
+		}
+	}
+	
+mysite/_config.php
+
+	DataObject::add_extension('Member', 'MyMemberDecorator');
+	
 
 ## TODO ##
 
