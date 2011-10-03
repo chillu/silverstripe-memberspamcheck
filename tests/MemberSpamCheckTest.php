@@ -53,7 +53,7 @@ class MemberSpamCheckTest extends SapphireTest {
 		$this->assertEquals(0, $checks[$ham2->ID]['score'], "Doesn't mark users not in service result");
 		
 		// SpamCheckData
-		$this->assertNotEmpty($checks[$spam1->ID]['data'], 'Aggregates check data');
+		$this->assertFalse(empty($checks[$spam1->ID]['data']), 'Aggregates check data');
 		$spam1Data = $checks[$spam1->ID]['data'];
 		// $this->assertObjectHasAttribute('MemberSpamCheckService_StopForumSpamOrgMock', $spam1Data);
 		// $spam1ServiceData = $spam1Data->MemberSpamCheckService_StopForumSpamOrgMock;
