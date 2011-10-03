@@ -62,13 +62,11 @@ class MemberSpamCheckTest extends SapphireTest {
 	
 	function testGetScoreFromFrequency() {
 		$service = new MemberSpamCheckService_StopForumSpamOrgMock();
-		$method = new ReflectionMethod($service, 'getScoreFromFrequency');
-		$method->setAccessible(true);
-		$this->assertEquals(-1, $method->invoke($service, 0));
-		$this->assertEquals(10, $method->invoke($service, 1));
-		$this->assertEquals(20, $method->invoke($service, 2));
-		$this->assertEquals(100, $method->invoke($service, 10));
-		$this->assertEquals(100, $method->invoke($service, 20));
+		$this->assertEquals(-1, $service->getScoreFromFrequency(0));
+		$this->assertEquals(10, $service->getScoreFromFrequency(1));
+		$this->assertEquals(20, $service->getScoreFromFrequency(2));
+		$this->assertEquals(100, $service->getScoreFromFrequency(10));
+		$this->assertEquals(100, $service->getScoreFromFrequency(20));
 	}
 }
 

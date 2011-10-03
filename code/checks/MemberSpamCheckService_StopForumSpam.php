@@ -104,7 +104,7 @@ class MemberSpamCheckService_StopForumSpamOrg extends MemberSpamCheckService {
 	 * @param Int Absolute, positive value
 	 * @return Int Value between -1 and 100
 	 */
-	protected function getScoreFromFrequency($frequency) {
+	function getScoreFromFrequency($frequency) {
 		$max = 100;
 		if($frequency == 0) return -1;
 		else return min(round(($frequency / $this->spamscoreFrequencyLimit) * $max), $max);
