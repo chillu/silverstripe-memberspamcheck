@@ -93,7 +93,7 @@ In order to write this property, we subclass `MemberSpamCheckTask` as follows:
 			foreach($spamMembers as $spamMember) {
 				// We don't have a plain "suspended flag", just make it a reaaaaallly long time.
 				// On the other hand, its useful to work back to when a member was flagged.
-				$spamMember->SuspendedUntil = date('Y-m-d', strtotime('+100 years', SS_Datetime::now()->Format('U')));
+				$spamMember->SuspendedUntil = date('Y-m-d', strtotime('+10 years', SS_Datetime::now()->Format('U')));
 				$spamMember->write();
 			}
 
