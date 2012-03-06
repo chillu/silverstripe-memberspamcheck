@@ -26,6 +26,7 @@ class MemberSpamCheck {
 	}
 	
 	/**
+         * 
 	 * @return MemberSpamCheckService
 	 */
 	function getService() {
