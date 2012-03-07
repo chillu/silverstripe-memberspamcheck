@@ -9,7 +9,14 @@
  */
 class MemberSpamCheckTask extends CliController {
 	
-	/**
+        /**
+         *
+         * @var MemberSpamCheck 
+         */
+        protected $checker = null;
+
+
+        /**
 	 * @var int How many members to query at a time.
 	 * We're passing them around as DataObjects, so don't set it too high.
 	 */
@@ -76,7 +83,10 @@ class MemberSpamCheckTask extends CliController {
 	}
 	
 	function getChecker() {
-		return new MemberSpamCheck();
+                if (!$this->checker) {
+                    $this->checker = new MemberSpamCheck();
+                }
+		return $this->checker;
 	}
 	
 	/**
