@@ -15,8 +15,8 @@ By default, it hooks into the free API of [stopforumspam.org](http://stopforumsp
 
 ## Requirements ##
 
- * SilverStripe 2.4 or newer
- * PHP 5.2 or newer (with JSON support)
+ * SilverStripe 3.1 or newer
+ * PHP 5.3 or newer (with JSON support)
  * PHP curl extension
 
 ## Usage ##
@@ -50,20 +50,16 @@ strongest criteria to determine spam scores. See "Howto: Track IP signups on the
 The [forum module](http://www.silverstripe.org/forum-module) has an `onForumRegister()`
 hook which is invoked on a new `Member` record. We can use this to track `IP` information:
 
-MyMemberDecorator.php:
+`mysite/code/MyMemberExtension.php`:
 
 	<?php
-	class MyMemberDecorator extends DataObjectDecorator {
-
-		function extraStatics() {
-			return array(
-				'db' => array(
-					'IP' => 'Varchar(200)',
-				)
-			);
-		}
-
-		function onForumRegister($request) {
+	class MyMemberExtension extends DataObjectExtension {
+	
+		private static $db = array(
+			'IP' => 'Varchar(200)',
+		);
+	
+		public function onForumRegister($request) {
 			// Check for weird IP address formats like "97.72.127.18, 97.73.64.151". see http://www.regular-expressions.info/examples.html
 			$ip = $request->getIP();
 			if($ip && !preg_match('/^\b(?:\d{1,3}\.){3}\d{1,3}\b$/', $ip)) {
@@ -73,11 +69,12 @@ MyMemberDecorator.php:
 			}
 		}
 	}
-	
-mysite/_config.php
 
-	DataObject::add_extension('Member', 'MyMemberDecorator');
-	
+`mysite/_config/config.yml`:
+
+	Member:
+	  extensions:
+	    - MyMemberExtension
 
 ### Suspend spammy members on the forum module ###
 

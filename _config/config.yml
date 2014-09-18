@@ -1,0 +1,11 @@
+---
+Name: memberspamcheck
+After:
+  - framework/*
+  - cms/*
+---
+
+Member:
+  extensions:
+    - MemberSpamCheckExtension
+

@@ -1,0 +1,16 @@
+{
+	"name": "chillu/memberspamcheck",
+	"description": "Extensions for flagging members as spam",
+	"type": "silverstripe-module",
+	"keywords": ["silverstripe", "forum", "spam"],
+	"authors": [
+	{
+		"name": "Ingo Schommer",
+		"email": "ingo@silverstripe.com"
+	}
+	],
+	"require": {
+		"silverstripe/framework": "~3.1"
+	},
+	"minimum-stability": "dev"
+}

@@ -27,7 +27,7 @@ class MemberSpamCheckTest extends SapphireTest {
 	}
 	
 	protected $requiredExtensions = array(
-		'Member' => array('MemberSpamCheckExtension', 'MemberSpamCheckService_MemberDecorator')
+		'Member' => array('MemberSpamCheckExtension', 'MemberSpamCheckService_MemberExtension')
 	);
 	
 	function testCheckStopForumSpam() {
@@ -160,13 +160,9 @@ JSON;
 /**
  * Necessary to add fields to member record without relying on existence of forum module etc.
  */
-class MemberSpamCheckService_MemberDecorator extends DataObjectDecorator implements TestOnly {
-	function extraStatics() {
-		return array(
-			'db' => array(
-				'Nickname' => 'Varchar',
-				'IP' => 'Varchar',
-			)
-		);
-	}
+class MemberSpamCheckService_MemberExtension extends DataExtension implements TestOnly {
+	private static $db = array(
+		'Nickname' => 'Varchar',
+		'IP' => 'Varchar',
+	);
 }
