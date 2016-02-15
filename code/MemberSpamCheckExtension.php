@@ -11,11 +11,11 @@
  * - "SpamCheckScore": Combined value from different service ratings, from 0 to 100. 
  *    -1 indicates that the record hasn't been checked, 0 indicates that the record is not considered spam.
  */
-class MemberSpamCheckExtension extends DataExtension {
+class MemberSpamCheckExtension extends DataExtension
+{
 
-	private static $db = array(
-		'SpamCheckData' => 'Text',
-		'SpamCheckScore' => 'MemberSpamCheck_Int',
-	);
-
+    private static $db = array(
+        'SpamCheckData' => 'Text',
+        'SpamCheckScore' => 'MemberSpamCheck_Int',
+    );
 }
